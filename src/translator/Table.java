@@ -356,19 +356,24 @@ public final class Table extends javax.swing.JFrame {
         if(fileName != null){
             try {
                 parsTable = new ParsTable();
-                FileInputStream fstream = new FileInputStream(fileName);
+                
                 String strLine;
+                String p;
                 int number = 0;
                 for(Object i : staticTable.indexes){
-                    BufferedReader br = new BufferedReader(new InputStreamReader(fstream));  
-                    Pattern pattern = Pattern.compile(staticTable.rows[(int)i].name);
+                    System.out.println("int " + (int)i);
+                    p = staticTable.rows[(int)i].name;
+                    FileInputStream fstream = new FileInputStream(fileName);
+                    BufferedReader br = new BufferedReader(new InputStreamReader(fstream)); 
+
                     number = 0;
                     while ((strLine = br.readLine()) != null){
-                        Matcher matcher = pattern.matcher(strLine);
-                        while(matcher.find())
-                            parsTable.add(staticTable.rows[(int)i].name, "" + number);
+
+                        if(strLine.contains(p))
+                            parsTable.add(p, "" + number);
                         number++;
-                    }      
+                    } 
+                    fstream.close();
                 }
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(Table.class.getName()).log(Level.SEVERE, null, ex);
@@ -520,6 +525,10 @@ public final class Table extends javax.swing.JFrame {
 
     private void jButtonFindActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonFindActionPerformed
         String name = jTextPars.getText();
+        System.out.println(parsTable.getRowPars().length);
+        for(Object i : parsTable.getIndexes()){
+            System.out.println(parsTable.getRowPars()[(int)i].getName());
+        }
         int index = parsTable.find(name);
         if( index > 0 )
             scrollToVisible(jTable2, index, 0);
